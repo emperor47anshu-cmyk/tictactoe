@@ -12,7 +12,7 @@ int main(void)
         {'4' , '5' , '6'},
         {'7' , '8' , '9'},
     };
-    printf("welcome dumbass\n");
+    printf("Have Fun\n");
 
 
    
