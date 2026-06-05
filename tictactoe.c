@@ -1,12 +1,12 @@
 #include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
 
 void printBoard(char board [3 ][3]);
 char checkWinner(char board[3][3]);
 int isboardfull(char board[3][3]);
 int minimax(char board[3][3] ,int depth , int isMaximizing ,char algo , char player);
-void findbestmove (char board[3][3] , char algo , char player);
-
-
+void findbestmove (char board[3][3] , char algo , char player,int difficulty);
 
 int main()
 {
@@ -17,15 +17,27 @@ int main()
     };
     printf("Have Fun\n");
 
-
     int gamemode;
+     int difficulty = 3;
     char player,algo;
-
 
     printf("1.Player Vs Player\n");
     printf("2.Player vs AI\n");
     printf("choose your mode(1 or 2):");
     scanf("%d",&gamemode);
+    if(gamemode == 2)
+    {
+        printf("\n");
+            printf("                          \n");
+            printf("   SELECT AI DIFFICULTY   \n");
+            printf("                          \n");
+            printf(" 1. Easy  \n");
+            printf(" 2. Medium  \n");
+            printf(" 3. Hard  \n");
+            printf("                          \n");
+            printf("Enter Your Choice (1-3)");
+            scanf("%d",&difficulty);
+    }
 
         printf("Do U want to be X or O:");
         scanf( " %c",&player);
@@ -92,13 +104,13 @@ int main()
   
             }
             else if(gamemode == 2)
-    {
-        printf("\nAI is thinking....\n");
-        findbestmove(board,algo,player);
+            {
+                printf("\nAI is thinking....\n");
+                findbestmove(board,algo,player,difficulty);
+            }
+    
     }
-        } 
-    
-    
+
 
     char winner = checkWinner(board);
     if(winner == 'X' || winner == 'O')
@@ -269,8 +281,7 @@ char checkWinner(char board[3][3])
         return bestvalue;
     }
 
-
-    
+   
     }
 
     int isboardfull(char board[3][3])
@@ -288,8 +299,42 @@ char checkWinner(char board[3][3])
         return 1;
     }
 
-    void findbestmove (char board[3][3] , char algo , char player)
+    void findbestmove (char board[3][3] , char algo , char player,int difficulty)
     {
+        int use_minimax = 1;
+
+        if(difficulty == 1)
+        {
+            use_minimax = 0;
+        }
+        else if(difficulty ==2)
+        {
+            int chance = rand() % 100;
+
+        if(chance < 50)
+        {
+            use_minimax = 0;
+        }
+        }
+
+        if(use_minimax == 0)
+        {
+            int valid = 0;
+            while (valid == 0)
+            {
+                int r = rand() % 3;
+                int c = rand() % 3;
+
+                if(board[r][c] > '1' && board[r][c] < '9')
+                {
+                    board[r][c] = algo;
+                    valid = 1;
+                }
+            }
+            return;
+        }
+        
+
         int bestscore = -1000;
         int best_row = -1;
         int best_col = -1;
