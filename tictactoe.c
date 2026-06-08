@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <ncurses.h>
 
-void printBoard(char board [3 ][3]);
+void printBoard(char board [3 ][3],int cursor_row,int cursor_col);
 char checkWinner(char board[3][3]);
 int isboardfull(char board[3][3]);
 int minimax(char board[3][3] ,int depth , int isMaximizing ,char algo , char player);
@@ -55,67 +56,56 @@ int main()
    
     char current_player = 'X';
     int moves = 0;
+
+    initscr();
+    noecho();
+    cbreak();
+    keypad(stdscr, TRUE);
+    curs_set(0);
+    
+    int cursor_row = 0;
+    int cursor_col = 0;
+
     while (moves < 9)
     {
-        printBoard(board);
-
-        if(current_player == player)
+        if (current_player == player || gamemode == 1)
         {
-            int choice;
-            printf("\nPlayer 1 (%c),enter a number(1-9):",player);
-            scanf("%d",&choice);
+            int selected = 0;
+            while (!selected)
+            {
+                printBoard(board,cursor_row,cursor_col);
+                int input = getch();
 
-            if (choice < 1 || choice > 9)
-            {
-                printf("Invalid Input!Please choose between(1-9)");
-                continue;
-            }
-   
-      int row = (choice -1) /3;
-      int col = (choice -1) %3;
-     if( board[row][col] < '1'||board[row][col] > '9')
-     {
-        printf("Spot already taken!Please Pick another.\n");
-        continue;
-     }
-     board[row][col] = current_player;
-        }  
-        else
-        {
-            if(gamemode == 1)
-            {
-                int choice;
-                printf("\nPlayer 2(%c),enter a number(1-9):",algo);
-                scanf("%d",&choice);
-                
-                if(choice < 1 || choice > 9)
+                if (input == KEY_UP && cursor_row > 0)cursor_row--;
+                if (input == KEY_DOWN && cursor_row < 2)cursor_row++;
+                if (input == KEY_LEFT && cursor_col > 0)cursor_col--;
+                if (input == KEY_RIGHT && cursor_col < 2)cursor_col++;
+
+                if (input == 10)
                 {
-                    printf("Invalid Input!Please choose between(1-9)");
-                    continue;
-                }
-                 int row = (choice -1) /3;
-                 int col = (choice -1) %3;
-                 if( board[row][col] < '1'||board[row][col] > '9')
+                    if(board[cursor_row][cursor_col] >= '1' &&board[cursor_row][cursor_col] <= '9' )
                     {
-                        printf("Spot already taken!Please Pick another.\n");
-                         continue;
+                        board[cursor_row][cursor_col] = current_player;
+                        selected = 1;
                     }
-                      board[row][col] = current_player;
-  
+                }
+
             }
+        }  
             else if(gamemode == 2)
             {
-                printf("\nAI is thinking....\n");
+                mvprintw(15,10,"AI is thinking....");
+                refresh();
                 findbestmove(board,algo,player,difficulty);
             }
     
-    }
 
 
     char winner = checkWinner(board);
     if(winner == 'X' || winner == 'O')
     {
-        printBoard(board);
+        printBoard(board,cursor_row,cursor_col);
+        endwin();
         if(winner == player)
         {
             printf("\nPlayer 1(%c) Wins!\n",winner);
@@ -131,7 +121,7 @@ int main()
             printf("\nAI (%c) Wins! Better Luck next time.\n",winner);
             
         }
-    break;    
+    break;
     }
 
       if (current_player == player)
@@ -145,15 +135,14 @@ int main()
        moves++;
     }
 
-   if(moves == 9)
+if (moves == 9)
     {
-        printBoard(board);
+        printBoard(board,cursor_row,cursor_col);
+        endwin();
         printf("Draw\n");
     }
-    return 0;
+     return 0;
 }
-
-
 char checkWinner(char board[3][3])
 {
     for(int i = 0; i < 3; i++)
@@ -192,23 +181,35 @@ char checkWinner(char board[3][3])
 
 
 
-    void printBoard(char board [3 ][3])
+    void printBoard(char board [3 ][3],int cursor_row,int cursor_col)
     {
+        clear();
+        mvprintw(2,10,"=== TIC-TAC-TOE ===");
 
-        printf("\n");
         for(int i = 0; i < 3; i++)
         {
-            printf("%c | %c | %c \n" ,
-                board[i][0],
-                 board[i][1],
-                 board[i][2]);
-
-                 if(i < 2)
-                 {
-                    printf("---+---+---\n");
-                 }
+            for(int j = 0; j < 3; j++)
+            {
+                if (i == cursor_row && j == cursor_col)
+                {
+                    attron(A_REVERSE);
+                }
+                if (board[i][j] >= '1' && board[i][j] <= '9')
+                {
+                    mvprintw(5 + (i*2),15 +(j*4),".");
+                }
+                else
+                {
+                    mvprintw(5 + (i*2),15 +(j*4),"%c",board[i][j]);
+                }
+                if (i == cursor_row &&  j == cursor_col)
+                {
+                    attroff(A_REVERSE);
+                }
+            }
         }
-        printf("\n");
+        mvprintw(12,10,"Use Arrow Keys to Move.Press ENTER to select.");
+        refresh();
     }
 
 

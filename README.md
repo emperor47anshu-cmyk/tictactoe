@@ -23,6 +23,6 @@ started learning to code a month ago!
 ## how to run
 
 ```bash
- gcc tictactoe.c -o tictactoe
+clang tictactoe.c -o tictactoe -lncurses
 ./tictactoe
 
