@@ -19,16 +19,35 @@ int main()
     printf("Have Fun\n");
 
     int gamemode;
-     int difficulty = 3;
+    int difficulty = 3;
     char player,algo;
-
+    while(1)
+    {
     printf("1.Player Vs Player\n");
     printf("2.Player vs AI\n");
     printf("choose your mode(1 or 2):");
-    scanf("%d",&gamemode);
-    if(gamemode == 2)
+    if(scanf("%d",&gamemode) == 1)
     {
-        printf("\n");
+        if(gamemode == 1 || gamemode == 2)
+        {
+            break;
+        }
+        else{
+            printf("Invalid number! Please choose 1 or 2.\n");
+        }
+    }
+    else 
+    {
+        printf("Invalid input! Please enter a number\n");
+    }
+        while(getchar() != '\n');
+    }
+
+     if(gamemode == 2)
+    {
+        while(1)
+        {
+            printf("\n");
             printf("                          \n");
             printf("   SELECT AI DIFFICULTY   \n");
             printf("                          \n");
@@ -37,22 +56,46 @@ int main()
             printf(" 3. Hard  \n");
             printf("                          \n");
             printf("Enter Your Choice (1-3)");
-            scanf("%d",&difficulty);
-    }
 
-        printf("Do U want to be X or O:");
+        if(scanf("%d",&difficulty) == 1)
+        {
+            if(difficulty >= 1 && difficulty <= 3)
+            {
+                break;
+            }
+            else{
+                printf("Invalid number! Please choose 1 ,2 or 3.\n");
+            }
+        }
+        else
+        {
+            printf("Invalid input! Please enter a number\n");
+        }
+         while(getchar() != '\n');
+        }
+    }
+while(1)
+{
+    printf("Do U want to be X or O:");
         scanf( " %c",&player);
+         while(getchar() != '\n');
 
         if(player == 'X' || player == 'x')
         {
             player = 'X';
             algo = 'O';
+            break;
         }
-        else
+        else if(player == 'O' || player == '0' || player == 'o')
         {
             player = 'O';
             algo = 'X'; 
+            break;
         }
+        else{
+            printf("Invalid choice! please type exactly X or O.\n");
+        }
+    }
    
     char current_player = 'X';
     int moves = 0;
